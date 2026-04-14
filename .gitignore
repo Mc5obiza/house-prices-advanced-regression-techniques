@@ -1,0 +1,5 @@
+# Ignore dataset files
+/data/
+
+# Ignore local inspection script
+/backend/hdk.py
