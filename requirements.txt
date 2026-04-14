@@ -1,0 +1,10 @@
+joblib==1.5.1
+numpy==2.3.2
+pandas==2.3.1
+scikit-learn==1.6.1
+xgboost==3.0.4
+fastapi==0.135.3
+uvicorn==0.43.0
+python-multipart==0.0.22
+streamlit==1.55.0
+requests==2.32.5

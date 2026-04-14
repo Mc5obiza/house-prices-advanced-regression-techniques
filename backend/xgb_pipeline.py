@@ -35,7 +35,6 @@ SEASON_MAP = {
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 TRAIN_CSV_PATH = PROJECT_ROOT / "data" / "train.csv"
 MODEL_OUTPUT_PATH = Path(__file__).resolve().parent / "xgb_house_price.joblib"
-LEGACY_MODEL_OUTPUT_PATH = Path(__file__).resolve().parent / "xgb_house_price.pkl"
 
 BEST_XGB_PARAMS = {
     "learning_rate": 0.1,
@@ -240,7 +239,7 @@ def save_model(model: Pipeline, model_path: str | Path) -> None:
 
 
 def load_model(model_path: str | Path) -> Pipeline:
-    # Backward compatibility for models pickled when this file was run as __main__.
+    # Compatibility for models serialized while this file ran as __main__.
     main_module = sys.modules.get("__main__")
     if main_module is not None:
         setattr(main_module, "HouseFeatureEngineer", HouseFeatureEngineer)
@@ -248,21 +247,7 @@ def load_model(model_path: str | Path) -> Pipeline:
         setattr(main_module, "_select_num_columns", _select_num_columns)
         setattr(main_module, "_select_cat_columns", _select_cat_columns)
 
-    target_model_path = Path(model_path)
-    if (
-        target_model_path == MODEL_OUTPUT_PATH
-        and not target_model_path.exists()
-        and LEGACY_MODEL_OUTPUT_PATH.exists()
-    ):
-        target_model_path = LEGACY_MODEL_OUTPUT_PATH
-
-    loaded_model = joblib.load(target_model_path)
-
-    # Auto-migrate legacy .pkl artifact to .joblib the first time it is loaded.
-    if target_model_path == LEGACY_MODEL_OUTPUT_PATH and not MODEL_OUTPUT_PATH.exists():
-        save_model(loaded_model, MODEL_OUTPUT_PATH)
-
-    return loaded_model
+    return joblib.load(Path(model_path))
 
 
 def train_and_save_model() -> Path:
