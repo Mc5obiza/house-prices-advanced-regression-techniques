@@ -26,7 +26,9 @@ try:
 except Exception as exc:  # pragma: no cover
     MODEL_LOAD_ERROR = str(exc)
 
-
+@app.get("/")
+def root() -> dict[str, str]:
+    return {"message": "Welcome to the House Pricing Predictor API. Use /predict to get predictions."}
 @app.get("/health")
 def health() -> dict[str, str]:
     if MODEL is None:
